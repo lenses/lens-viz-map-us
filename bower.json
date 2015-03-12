@@ -1,8 +1,8 @@
 {
-  "name": "th-map-us",
+  "name": "lens-viz-map-us",
   "version": "0.0.0",
-  "keywords": "seed, polymer, web-components",
-  "main": "th-map-us.html",
+  "keywords": "lenses, polymer, web-components",
+  "main": "lens-viz-map-us.html",
   "dependencies": {
     "polymer": "Polymer/polymer#~0.5.1",
     "topojson": "latest",

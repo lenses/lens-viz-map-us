@@ -1,20 +1,20 @@
 <!--
     @license
-    Copyright (c) 2014 Thelma Project Authors. All rights reserved.
-    This code may only be used under the MIT license found at http://thelmanews.github.io/LICENSE.txt
-    The complete set of authors may be found at http://thelmanews.github.io//AUTHORS.txt
-    The complete set of contributors may be found at http://thelmanews.github.io/CONTRIBUTORS.txt
+    Copyright (c) 2014 Lenses Project Authors. All rights reserved.
+    This code may only be used under the MIT license found at http://lenses.github.io/LICENSE.txt
+    The complete set of authors may be found at http://lenses.github.io//AUTHORS.txt
+    The complete set of contributors may be found at http://lenses.github.io/CONTRIBUTORS.txt
 -->
 <!doctype html>
 <html>
 <head>
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <title>th-map-us Demo</title>
+  <title>lens-viz-map-us Demo</title>
 
   <script src="../webcomponentsjs/webcomponents.js"></script>
   <script>
     document.addEventListener('polymer-ready', function() {
-      var map = document.querySelector('th-map-us');
+      var map = document.querySelector('lens-viz-map-us');
       map.addEventListener('th-ready', function() {
         //map.reset();
         setTimeout(function() {
@@ -31,14 +31,14 @@
       });
     });
   </script>
-  <link rel="import" href="th-map-us.html">
+  <link rel="import" href="lens-viz-map-us.html">
 
 </head>
 <body unresolved>
 
-  <p>An example of using <code>&lt;th-map-us></code>:</p>
+  <p>An example of using <code>&lt;lens-viz-map-us></code>:</p>
 
-  <th-map-us animateOnInit="true"></th-map-us>
+  <lens-viz-map-us animateOnInit="true"></lens-viz-map-us>
 
 </body>
 </html>
