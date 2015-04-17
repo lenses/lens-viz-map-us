@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../th-d3-chart/th-d3-chart.html">
+<link rel="import" href="../lens-u-data-selector/lens-u-data-selector.html">
 
 <polymer-element name="lens-viz-map-us" extends="th-d3-chart" attributes="input output">
 	<template>
@@ -58,6 +59,7 @@
 	      }	      
 
 	    </style>
+	    <lens-u-data-selector id="data_selector" input="{{input}}" selections="{{labelValueSelection}}" ></lens-u-data-selector>
 		<div id="state"></div>
 		<span id="tip">(tap again to zoom out)</span>
 	    <svg id="chart"></svg>
@@ -134,12 +136,17 @@
 		  	],
 		  	dataLabel: "Data",
 
+		  	labelValueSelection: null,
+
 			
 			dataUrls : {
                 us: "data/us.json"  //TODO needs to be corrected!
        		},
        		centers: [],
        		centered: false,
+       		observe: {
+       			input: "inputChanged"
+       		},
        		/**
        		 * domReady function is defined here overriding hte definition in th-animated not to fire th-ready too early
        		 * @return {[type]} [description]
@@ -156,7 +163,41 @@
 	                }
 	            }
 
+	             this.$.data_selector.addEventListener('th-data-selection-changed', function() {
+		        	if(this.labelValueSelection.length==2) {
+			        	this.chartData = this.input.map(function(row) {
+			        		return {
+			        			label: row[this.labelValueSelection[0]],
+			        			value: row[this.labelValueSelection[1][0]]
+			        		}
+
+			        	}.bind(this));
+			        }
+		        }.bind(this));
+
+
 	        },
+	        
+	        inputChanged: function() {
+	        	/*
+	        	
+				// not needed. handeled in th-data-selection-changed event listener
+				
+	        	console.log('labelValueSelection',this.labelValueSelection,this.labelValueSelection[0],this.labelValueSelection[1][0]);
+	        	if(this.labelValueSelection.length==2) {
+		        	this.chartData = this.input.map(function(row) {
+		        		return {
+		        			label: row[this.labelValueSelection[0]],
+		        			value: row[this.labelValueSelection[1][0]]
+		        		}
+
+		        	}.bind(this));
+		        }
+		        console.log(this.chartData);
+		        */
+
+	        },
+	        
 			init: function() {
 		    
 			  	var self = this;
