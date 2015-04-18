@@ -60,6 +60,7 @@
 
 	    </style>
 	    <lens-u-data-selector id="data_selector" input="{{input}}" selections="{{labelValueSelection}}" ></lens-u-data-selector>
+	    <lens-u-data-utility id="data_utility"></lens-u-data-utility>
 		<div id="state"></div>
 		<span id="tip">(tap again to zoom out)</span>
 	    <svg id="chart"></svg>
@@ -165,10 +166,13 @@
 
 	             this.$.data_selector.addEventListener('th-data-selection-changed', function() {
 		        	if(this.labelValueSelection.length==2) {
+		        		var firstValue = this.input[0][this.labelValueSelection[1][0]];
+
+		        		this.valueFormat = this.$.data_utility.extractNumberFormat(firstValue);
 			        	this.chartData = this.input.map(function(row) {
 			        		return {
 			        			label: row[this.labelValueSelection[0]],
-			        			value: row[this.labelValueSelection[1][0]]
+			        			value: this.$.data_utility.unformatString(row[this.labelValueSelection[1][0]])
 			        		}
 
 			        	}.bind(this));
@@ -182,7 +186,7 @@
 	        	/*
 	        	
 				// not needed. handeled in th-data-selection-changed event listener
-				
+
 	        	console.log('labelValueSelection',this.labelValueSelection,this.labelValueSelection[0],this.labelValueSelection[1][0]);
 	        	if(this.labelValueSelection.length==2) {
 		        	this.chartData = this.input.map(function(row) {
@@ -404,8 +408,8 @@
 					    // self.$.value.innerText = self.dataMap.get(d.properties.name).toFixed(2);
 					    
 					    self.$.label.innerText = self.dataLabel;
-					    self.$.value.innerText = self.dataMap.get(d.properties.name.toLowerCase()).toFixed(2);
-
+					    var dataPointValue = self.dataMap.get(d.properties.name.toLowerCase());
+					    self.$.value.innerText =  self.$.data_utility.formatNumber(dataPointValue, self.valueFormat.pattern);
 
 					    self.$.legend.style.opacity = 1;
 
