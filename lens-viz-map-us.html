@@ -1,13 +1,10 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../th-d3-chart/th-d3-chart.html">
 <link rel="import" href="../lens-u-data-selector/lens-u-data-selector.html">
 
-<polymer-element name="lens-viz-map-us" extends="th-d3-chart" attributes="input output">
-	<template>
+<dom-module id="lens-viz-map-us">
 
-		<core-style ref="theme"></core-style>
 
-	    <style>
+	  <style>
 
 	      :host {
 	        display: inline-block;
@@ -99,8 +96,9 @@
 	      	font-size: 0.6em;
 	      }	      
 
-	    </style>
-	    <lens-u-data-selector id="data_selector" input="{{input}}" selections="{{labelValueSelection}}" ></lens-u-data-selector>
+	  </style>
+    <template>
+      <lens-u-data-selector id="data_selector" input="{{input}}" selections="{{labelValueSelection}}" ></lens-u-data-selector>
 	    <lens-u-data-utility id="data_utility"></lens-u-data-utility>
 		<div id="state"></div>
 		<span id="tip">(tap again to zoom out)</span>
@@ -124,9 +122,12 @@
 
 	<script>
 	
-		Polymer('lens-viz-map-us', {
-			
-		  	chartData: [
+    Polymer({
+      is: 'lens-viz-map-us', 
+      properties: {
+        input: {
+          type: Array,
+          value: [
 						{"state":"Alabama","value":0.16490015, "crossed": true, "color": "#000"},
 						{"state":"Alaska","value":1.27506968, "crossed": true},
 						{"state":"Arizona","value":1.3},
@@ -178,13 +179,16 @@
 						{"state":"West Virginia","value":1.3},
 						{"state":"Wisconsin","value":0.99992319, "crossed": true},
 						{"state":"Wyoming","value":0.58640553}
-
-		  	],
-		  	dataLabel: "Data",
-
-		  	labelValueSelection: null,
-
-			
+          ],
+          observer: '_inputChanged'
+        },
+        labelValueSelection: {
+          type: Array,
+          value: [],
+          observer: '_inputChanged'
+        },
+      },
+		  dataLabel: "Data",
 			dataUrls : {
                 us: "data/us.json"  //TODO needs to be corrected!
        		},
@@ -214,7 +218,7 @@
 		        		var firstValue = this.input[0][this.labelValueSelection[1][0]];
 
 		        		this.valueFormat = this.$.data_utility.extractNumberFormat(firstValue);
-			        	this.chartData = this.input.map(function(row) {
+			        	this.input = this.input.map(function(row) {
 			        		return {
 			        			label: row[this.labelValueSelection[0]],
 			        			value: this.$.data_utility.unformatString(row[this.labelValueSelection[1][0]])
@@ -234,7 +238,7 @@
 
 	        	console.log('labelValueSelection',this.labelValueSelection,this.labelValueSelection[0],this.labelValueSelection[1][0]);
 	        	if(this.labelValueSelection.length==2) {
-		        	this.chartData = this.input.map(function(row) {
+		        	this.input = this.input.map(function(row) {
 		        		return {
 		        			label: row[this.labelValueSelection[0]],
 		        			value: row[this.labelValueSelection[1][0]]
@@ -242,7 +246,7 @@
 
 		        	}.bind(this));
 		        }
-		        console.log(this.chartData);
+		        console.log(this.input);
 		        */
 
 	        },
@@ -349,7 +353,7 @@
 
 
 
-                var marks = self.chartData ? self.chartData.filter(function(d) {
+                var marks = self.input ? self.input.filter(function(d) {
 
                 		return d.crossed ? d : null;
                 }) : [];
@@ -381,8 +385,8 @@
 
 	        	self.dataMap = d3.map();
 
-	        	var minValue = d3.min(self.chartData, function(d) {return d.value;});
-	        	var maxValue = d3.max(self.chartData, function(d) {return d.value;});
+	        	var minValue = d3.min(self.input, function(d) {return d.value;});
+	        	var maxValue = d3.max(self.input, function(d) {return d.value;});
 
 
 	        	var breaks = 4;
@@ -394,12 +398,12 @@
 
 	            range = CoreStyle.g.theme.mapColors;
 
-				for(index in self.chartData) {
+				for(index in self.input) {
 
-					var name = self.chartData[index].state || self.chartData[index].label;
+					var name = self.input[index].state || self.input[index].label;
 					name = name.replace(/[\s\t]+/g," ");
 					name = self._formatStateName(name);
-					self.dataMap.set(name, self.chartData[index].value);
+					self.dataMap.set(name, self.input[index].value);
 				}
 
 			      
@@ -591,7 +595,7 @@
 				    "chartWidth":{"friendly":"Width", "type":"int", "default":300},
 				    "chartHeight":{"friendly":"Height", "type":"int", "default":200},
 				    "dataLabel":{"friendly":"Data Label", "type":"String", "default":"Medicaid Coverage"},
-				    "chartData":{"friendly":"Data", "type":"table-repeating","rows":2, 
+				    "input":{"friendly":"Data", "type":"table-repeating","rows":2, 
 				      "fields":{
 				        "state":{"friendly":"State", "type":"string", "readonly": "true"},
 				        "value":{"friendly":"Value", "type":"int", "default":15},
@@ -606,9 +610,9 @@
                 
             
             
-        });
+    });
 
 
 	</script>
 
-</polymer-element>
+</dom-module>
