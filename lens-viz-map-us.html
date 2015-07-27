@@ -117,6 +117,7 @@
 
 	</template>
 	
+	<script src="../d3/d3.js"></script> 
 	<script src="../topojson/topojson.js"></script> 
 	<script src="js/code-to-statename.js"></script> 
 
@@ -184,7 +185,7 @@
         },
         labelValueSelection: {
           type: Array,
-          value: [],
+          value: ['',''],
           observer: '_inputChanged'
         },
       },
@@ -194,14 +195,11 @@
        		},
        		centers: [],
        		centered: false,
-       		observe: {
-       			input: "inputChanged"
-       		},
        		/**
        		 * domReady function is defined here overriding hte definition in th-animated not to fire th-ready too early
        		 * @return {[type]} [description]
        		 */
-	        domReady: function() {
+	        ready: function() {
 	            this.init();
 
 	            if(this.animateAfter>0) {
@@ -231,7 +229,7 @@
 
 	        },
 	        
-	        inputChanged: function() {
+	        _inputChanged: function() {
 	        	/*
 	        	
 				// not needed. handeled in th-data-selection-changed event listener
@@ -255,7 +253,7 @@
 		    
 			  	var self = this;
 			  	  
-			  	self.dims = self.setupDimensions(self);
+          self.dims = {width: 300, height: 400}; //self.setupDimensions(self);
 
 			  	self.formats = {
                 	percent: d3.format('%')
@@ -287,7 +285,7 @@
 	                .attr('class','states_map');
 	            
 
-	            d3.json(self.resolvePath(self.dataUrls.us), function(error, us) {
+	            d3.json(self.resolveUrl(self.dataUrls.us), function(error, us) {
 	                self._processData(error,us);
 	            
 	            });    
@@ -333,7 +331,6 @@
                         return classes;
                     })
                     .attr('d', self.path)
-                    //.style('fill', CoreStyle.g.theme.background)
                     .on("click", function(d) { return self._clicked(d,self); })
                     .attr("centroid", function(d) {
                       var centroid = self.path.centroid(d);
