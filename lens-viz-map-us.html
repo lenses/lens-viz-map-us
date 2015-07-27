@@ -226,7 +226,6 @@
 			        }
 		        }.bind(this));
 
-
 	        },
 	        
 	        _inputChanged: function() {
@@ -336,7 +335,8 @@
                       var centroid = self.path.centroid(d);
                       centers[d.properties.name.toLowerCase().replace(/\s/g, '-')]= centroid;
                     })
-                    .attr("color", function(d) { return d.color;})
+                    //.attr("color", function(d) { return d.color;})
+                    .attr('fill', '#FFF')
                     .attr("state", function(d) { 
                     	//TODO: doesn;t do anything! cleanup?
 
@@ -393,7 +393,7 @@
 	        		return minValue + ((i) * interval);
 	        	});
 
-	            range = CoreStyle.g.theme.mapColors;
+	            var range = ['rgb(239,243,255)','rgb(198,219,239)','rgb(158,202,225)','rgb(107,174,214)','rgb(66,146,198)','rgb(33,113,181)','rgb(8,69,148)'];//CoreStyle.g.theme.mapColors;
 
 				for(index in self.input) {
 
@@ -413,7 +413,7 @@
 				var colorScaleWidth = self.dims.width * 0.7;
 
 			    // colors in legendScale
-			    d3.select(self.$.legendScale).selectAll('span').data(CoreStyle.g.theme.mapColors).enter().append('span')
+			    d3.select(self.$.legendScale).selectAll('span').data(range).enter().append('span')
 			    	.style('width', colorScaleWidth/7+'px')
 			    	.style('background-color', function(d) { return d;});
 
@@ -431,6 +431,8 @@
 
 				    self.initialized = true;
 		            self.fire('th-ready', {msg: 'element ready', element: this});
+
+		            self.animate();
 
 
 		        }
