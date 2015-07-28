@@ -31,7 +31,7 @@
       	position: absolute;
       	transition: opacity 0.7s;
       	opacity: 0;
-      	bottom: 25px;
+      	/*bottom: 25px;*/
       	width: 100%;
       	font-size: 0.85em;
       }
@@ -229,11 +229,13 @@
 	        },
 	        
 	        _inputChanged: function() {
-	        	/*
 	        	
 				// not needed. handeled in th-data-selection-changed event listener
+				
+		        if(!self.labelValueSelection || !self.labelValueSelection[0] || !self.labelValueSelection[1]) {
+		          return;
+		        }
 
-	        	console.log('labelValueSelection',this.labelValueSelection,this.labelValueSelection[0],this.labelValueSelection[1][0]);
 	        	if(this.labelValueSelection.length==2) {
 		        	this.input = this.input.map(function(row) {
 		        		return {
@@ -244,7 +246,6 @@
 		        	}.bind(this));
 		        }
 		        console.log(this.input);
-		        */
 
 	        },
 	        
@@ -252,7 +253,7 @@
 		    
 			  	var self = this;
 			  	  
-          self.dims = {width: 300, height: 200}; //self.setupDimensions(self);
+          		self.dims = self.getComputedSize();//{width: 300, height: 200}; //self.setupDimensions(self);
 
 			  	self.formats = {
                 	percent: d3.format('%')
@@ -608,10 +609,36 @@
 				    }
 				  }
 				}
+		   },
+
+		   //TODO: to be moved to mixin file.
+		   getComputedSize: function() {
+		   	  var dimNames = ['width', 'height'],
+		   	  	  offsetNames = {width: 'offsetWidth', height: 'offsetHeight'};
+		   	  var dims = {};
+
+		   	  for(index in dimNames) {
+		   	  	var dimName = dimNames[index];
+		   	  	var dim = this[offsetNames[dimName]];
+		   	  	if(dim<=0) {
+		   	  		console.log(this.style);
+		   	  		dim = this.style[dimName];
+		   	  	}
+	            if(/.*\%/.test(dim)){
+	              dim = parseInt(window.getComputedStyle(this)[dimName]);
+	            }else {
+	              dim = parseInt(dim);
+	            }
+
+	            dims[dimName] = dim || 400;
+
+		   	  }
+		   	  return dims;
+
+
 		   }
 
-
-                
+	         
             
             
     });
