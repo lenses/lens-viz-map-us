@@ -139,8 +139,8 @@
         input: {
           type: Array,
           value: [
-			{"state":"Alabama","value":0.16490015, "crossed": true, "color": "#000"},
-			{"state":"Alaska","value":1.27506968, "crossed": true},
+			{"state":"Alabama","value":0.16490015, "marked": true, "color": "#000"},
+			{"state":"Alaska","value":1.27506968, "marked": true},
 			{"state":"Arizona","value":1.3},
 			{"state":"Arkansas","value":1.3},
 			{"state":"California","value":1.3},
@@ -148,47 +148,47 @@
 			{"state":"Connecticut","value":2.0},
 			{"state":"Delaware","value":1.3},
 			{"state":"District of Columbia","value":2},
-			{"state":"Florida","value":0.34861751, "crossed": true},
-			{"state":"Georgia","value":0.38855606, "crossed": true},
+			{"state":"Florida","value":0.34861751, "marked": true},
+			{"state":"Georgia","value":0.38855606, "marked": true},
 			{"state":"Hawaii","value":1.3},
-			{"state":"Idaho","value":0.27427035, "crossed": true},
+			{"state":"Idaho","value":0.27427035, "marked": true},
 			{"state":"Illinois","value":1.3},
-			{"state":"Indiana","value":0.2404761, "crossed": true},
+			{"state":"Indiana","value":0.2404761, "marked": true},
 			{"state":"Iowa","value":1.3},
-			{"state":"Kansas","value":0.37995391, "crossed": true},
+			{"state":"Kansas","value":0.37995391, "marked": true},
 			{"state":"Kentucky","value":1.3},
-			{"state":"Louisiana","value":0.23986175, "crossed": true},
-			{"state":"Maine","value":1.0503072, "crossed": true},
+			{"state":"Louisiana","value":0.23986175, "marked": true},
+			{"state":"Maine","value":1.0503072, "marked": true},
 			{"state":"Maryland","value":1.3},
 			{"state":"Massachusetts","value":1.3},
 			{"state":"Michigan","value":1.3},
 			{"state":"Minnesota","value":2.0},
-			{"state":"Mississippi","value":0.29024577, "crossed": true},
-			{"state":"Missouri","value":0.23863287, "crossed": true},
-			{"state":"Montana","value":0.51758832, "crossed": true},
-			{"state":"Nebraska","value":0.55384024, "crossed": true},
+			{"state":"Mississippi","value":0.29024577, "marked": true},
+			{"state":"Missouri","value":0.23863287, "marked": true},
+			{"state":"Montana","value":0.51758832, "marked": true},
+			{"state":"Nebraska","value":0.55384024, "marked": true},
 			{"state":"Nevada","value":1.3},
-			{"state":"New Hampshire","value":0.7498463, "crossed": true},
+			{"state":"New Hampshire","value":0.7498463, "marked": true},
 			{"state":"New Jersey","value":1.3},
 			{"state":"New Mexico","value":1.3},
 			{"state":"New York","value":1.3},
-			{"state":"North Carolina","value":0.45368663, "crossed": true},
+			{"state":"North Carolina","value":0.45368663, "marked": true},
 			{"state":"North Dakota","value":1.3},
 			{"state":"Ohio","value":1.3},
-			{"state":"Oklahoma","value":0.48010752, "crossed": true},
+			{"state":"Oklahoma","value":0.48010752, "marked": true},
 			{"state":"Oregon","value":1.3},
-			{"state":"Pennsylvania","value":0.37995391, "crossed": true},
+			{"state":"Pennsylvania","value":0.37995391, "marked": true},
 			{"state":"Rhode Island","value":1.3},
-			{"state":"South Carolina","value":0.66996927, "crossed": true},
-			{"state":"South Dakota","value":0.53909370, "crossed": true},
-			{"state":"Tennessee","value":1.10990783, "crossed": true},
-			{"state":"Texas","value":0.19132104, "crossed": true},
+			{"state":"South Carolina","value":0.66996927, "marked": true},
+			{"state":"South Dakota","value":0.53909370, "marked": true},
+			{"state":"Tennessee","value":1.10990783, "marked": true},
+			{"state":"Texas","value":0.19132104, "marked": true},
 			{"state":"Utah","value":0.46658986},
 			{"state":"Vermont","value":1.3},
-			{"state":"Virginia","value":0.51820276, "crossed": true},
+			{"state":"Virginia","value":0.51820276, "marked": true},
 			{"state":"Washington","value":1.3},
 			{"state":"West Virginia","value":1.3},
-			{"state":"Wisconsin","value":0.99992319, "crossed": true},
+			{"state":"Wisconsin","value":0.99992319, "marked": true},
 			{"state":"Wyoming","value":0.58640553}
           ],
           observer: '_inputChanged'
@@ -220,6 +220,16 @@
 	                  },self.animateAfter);
 	                }
 	            }
+
+	            this.stateAccessor = function(d) {
+	            	return d.state
+	            };
+	            this.dataAccessor = function(d) {
+	            	return d.value;
+	            };
+	            this.markAccessor = function(d) {
+	            	return d.marked;
+	            };
 
 	             this.$.data_selector.addEventListener('th-data-selection-changed', function() {
 		        	if(this.labelValueSelection.length==2) {
@@ -314,7 +324,7 @@
 
                 var marks = self.input ? self.input.filter(function(d) {
 
-                		return d.crossed ? d : null;
+                		return self.markAccessor(d) ? d : null;
                 }) : [];
 
 
@@ -328,7 +338,7 @@
 	            })
 	            .style('opacity',0)
 	            .attr('transform', function(d, i) {
-	                var name = d.state.toLowerCase().replace(/[\s\t]+/g,"-");
+	                var name = self.stateAccessor(d).toLowerCase().replace(/[\s\t]+/g,"-");
 	                //TODO change to a more elegant formatting....
 	            	return 'translate ('+parseInt(self.centers[name][0]-7)+','+parseInt(self.centers[name][1]-7)+') scale('+markScale+','+markScale+')';
 	            })
@@ -346,8 +356,8 @@
 
 	        	self.dataMap = d3.map();
 
-	        	var minValue = d3.min(self.input, function(d) {return d.value;});
-	        	var maxValue = d3.max(self.input, function(d) {return d.value;});
+	        	var minValue = d3.min(self.input, function(d) {return self.dataAccessor(d);});
+	        	var maxValue = d3.max(self.input, function(d) {return self.dataAccessor(d);});
 
 
 	        	var breaks = 4;
@@ -361,10 +371,10 @@
 
 				for(index in self.input) {
 
-					var name = self.input[index].state || self.input[index].label;
+					var name = self.stateAccessor(self.input[index]) || self.input[index].label;
 					name = name.replace(/[\s\t]+/g," ");
 					name = self._formatStateName(name);
-					self.dataMap.set(name, self.input[index].value);
+					self.dataMap.set(name, self.dataAccessor(self.input[index]));
 				}
 
 			      
@@ -611,7 +621,7 @@
 				      "fields":{
 				        "state":{"friendly":"State", "type":"string", "readonly": "true"},
 				        "value":{"friendly":"Value", "type":"int", "default":15},
-				        "crossed":{"friendly":"Cross Mark", "type":"boolean"}
+				        "marked":{"friendly":"Cross Mark", "type":"boolean"}
 				      }
 				    }
 				  }
