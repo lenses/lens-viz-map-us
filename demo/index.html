@@ -17,12 +17,22 @@
   </script>
   <link rel="import" href="../lens-viz-map-us.html">
 
+  <style>
+    .component {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
 </head>
 <body unresolved>
 
   <p>An example of using <code>&lt;lens-viz-map-us></code>:</p>
 
-  <lens-viz-map-us animateOnInit="true"></lens-viz-map-us>
+
+  <div style="width: 400px; height: 300px">
+    <lens-viz-map-us class="component" animateOnInit="true"></lens-viz-map-us>
+  </div>
 
 </body>
 </html>

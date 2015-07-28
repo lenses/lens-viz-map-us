@@ -9,8 +9,10 @@
       :host {
         display: inline-block;
         position: relative;
+        /*
         width: 300px;
         height: 300px;
+        */
       }
 
       div, span {
@@ -635,9 +637,10 @@
 	              dim = parseInt(dim);
 	            }
 
-	            dims[dimName] = dim || 400;
+	            dims[dimName] = dim || (dimName==='width' ? 400 : 300);
 
 		   	  }
+		   	  console.log('dims', dims);
 		   	  return dims;
 
 
