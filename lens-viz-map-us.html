@@ -4,99 +4,99 @@
 <dom-module id="lens-viz-map-us">
 
 
-	  <style>
+  <style>
 
-	      :host {
-	        display: inline-block;
-	        position: relative;
-	        width: 300px;
-	        height: 300px;
-	      }
+      :host {
+        display: inline-block;
+        position: relative;
+        width: 300px;
+        height: 300px;
+      }
 
-	      div, span {
-	      	pointer-events:none;
-	      }
+      div, span {
+      	pointer-events:none;
+      }
 
-	      #state {
-	      	position: absolute;
-	      	transition: opacity 0.7s;
-	      	opacity: 0;
-	      	top: 5px;
-	      	width: 100%;
-	      	text-align: center;
-	      	font-size: 1.6em;
-	      }
+      #state {
+      	position: absolute;
+      	transition: opacity 0.7s;
+      	opacity: 0;
+      	top: 5px;
+      	width: 100%;
+      	text-align: center;
+      	font-size: 1.6em;
+      }
 
-	      #legend {
-	      	position: absolute;
-	      	transition: opacity 0.7s;
-	      	opacity: 0;
-	      	bottom: 25px;
-	      	width: 100%;
-	      	font-size: 0.85em;
-	      }
-	      #label, #value {
-	      	display: inline-block;
-	      	height: 1.2em;
+      #legend {
+      	position: absolute;
+      	transition: opacity 0.7s;
+      	opacity: 0;
+      	bottom: 25px;
+      	width: 100%;
+      	font-size: 0.85em;
+      }
+      #label, #value {
+      	display: inline-block;
+      	height: 1.2em;
 
-	      }
+      }
 
-	      #value {
-	      	/*float: right;
-	      	margin-right: 15px;*/
-	      	position: absolute;
-	      	font-size: 1.2em;
-	      	font-weight: bold;
-	      	margin-top: 4px;
-	      	transition: all 0.15s linear;
-	      	left: -20px;
-	      }
+      #value {
+      	/*float: right;
+      	margin-right: 15px;*/
+      	position: absolute;
+      	font-size: 1.2em;
+      	font-weight: bold;
+      	margin-top: 4px;
+      	transition: all 0.15s linear;
+      	left: -20px;
+      }
 
-	      #value:before {
-	      	content: '';
-	      	width: 0; 
-			height: 0; 
-			border-left: 5px solid transparent;
-			border-right: 5px solid transparent;
-	
-			border-bottom: 5px solid black;
-			top: -3px;
-  			left: 40%;
-  			position: absolute;
-	      }
+      #value:before {
+      	content: '';
+      	width: 0; 
+		height: 0; 
+		border-left: 5px solid transparent;
+		border-right: 5px solid transparent;
 
-	      #max_value {
-	      }
+		border-bottom: 5px solid black;
+		top: -3px;
+			left: 40%;
+			position: absolute;
+      }
 
-	      #legendScale {
-	      	margin: 0 auto;
-	      }
-	      
-	      #legendScale span {
-	      	
-	      	height: 1em;
-	      	display: inline-block;
-	      }
+      #max_value {
+      }
 
-	      #legend .minmax {
+      #legendscale {
+      	margin: 0 auto;
+      }
+      
+      .legend-item {
+      	
+      	height: 1em;
+      	display: inline-block;
+      }
 
-		  width: 12%;
-		  display: inline-block;
-		  overflow: hidden;
-	          text-align: center;
-	      }
+      #legend .minmax {
 
-	      #tip {
-	      	position: absolute;
-	      	transition: opacity 0.7s;
-	      	opacity: 0;
-	      	top: 40px;
-	      	width: 100%;
-	      	text-align: center;
-	      	font-size: 0.6em;
-	      }	      
+	  width: 12%;
+	  display: inline-block;
+	  overflow: hidden;
+          text-align: center;
+      }
 
-	  </style>
+      #tip {
+      	position: absolute;
+      	transition: opacity 0.7s;
+      	opacity: 0;
+      	top: 40px;
+      	width: 100%;
+      	text-align: center;
+      	font-size: 0.6em;
+      }	      
+
+  </style>
     <template>
       <lens-u-data-selector id="data_selector" input="{{input}}" selections="{{labelValueSelection}}" ></lens-u-data-selector>
 	    <lens-u-data-utility id="data_utility"></lens-u-data-utility>
@@ -106,7 +106,7 @@
 	    <div id="legend" >
 	    	<div class="keys">
 	    		<span class="minmax" id="min_value"></span>
-	    		<span id="legendScale"></span>
+	    		<span id="legendscale"></span>
 	    		<span class="minmax" id="max_value"></span>
 	    	</div>
 		    <div id="value"></div>
@@ -129,57 +129,57 @@
         input: {
           type: Array,
           value: [
-						{"state":"Alabama","value":0.16490015, "crossed": true, "color": "#000"},
-						{"state":"Alaska","value":1.27506968, "crossed": true},
-						{"state":"Arizona","value":1.3},
-						{"state":"Arkansas","value":1.3},
-						{"state":"California","value":1.3},
-						{"state":"Colorado","value":1.3},
-						{"state":"Connecticut","value":2.0},
-						{"state":"Delaware","value":1.3},
-						{"state":"District of Columbia","value":2},
-						{"state":"Florida","value":0.34861751, "crossed": true},
-						{"state":"Georgia","value":0.38855606, "crossed": true},
-						{"state":"Hawaii","value":1.3},
-						{"state":"Idaho","value":0.27427035, "crossed": true},
-						{"state":"Illinois","value":1.3},
-						{"state":"Indiana","value":0.2404761, "crossed": true},
-						{"state":"Iowa","value":1.3},
-						{"state":"Kansas","value":0.37995391, "crossed": true},
-						{"state":"Kentucky","value":1.3},
-						{"state":"Louisiana","value":0.23986175, "crossed": true},
-						{"state":"Maine","value":1.0503072, "crossed": true},
-						{"state":"Maryland","value":1.3},
-						{"state":"Massachusetts","value":1.3},
-						{"state":"Michigan","value":1.3},
-						{"state":"Minnesota","value":2.0},
-						{"state":"Mississippi","value":0.29024577, "crossed": true},
-						{"state":"Missouri","value":0.23863287, "crossed": true},
-						{"state":"Montana","value":0.51758832, "crossed": true},
-						{"state":"Nebraska","value":0.55384024, "crossed": true},
-						{"state":"Nevada","value":1.3},
-						{"state":"New Hampshire","value":0.7498463, "crossed": true},
-						{"state":"New Jersey","value":1.3},
-						{"state":"New Mexico","value":1.3},
-						{"state":"New York","value":1.3},
-						{"state":"North Carolina","value":0.45368663, "crossed": true},
-						{"state":"North Dakota","value":1.3},
-						{"state":"Ohio","value":1.3},
-						{"state":"Oklahoma","value":0.48010752, "crossed": true},
-						{"state":"Oregon","value":1.3},
-						{"state":"Pennsylvania","value":0.37995391, "crossed": true},
-						{"state":"Rhode Island","value":1.3},
-						{"state":"South Carolina","value":0.66996927, "crossed": true},
-						{"state":"South Dakota","value":0.53909370, "crossed": true},
-						{"state":"Tennessee","value":1.10990783, "crossed": true},
-						{"state":"Texas","value":0.19132104, "crossed": true},
-						{"state":"Utah","value":0.46658986},
-						{"state":"Vermont","value":1.3},
-						{"state":"Virginia","value":0.51820276, "crossed": true},
-						{"state":"Washington","value":1.3},
-						{"state":"West Virginia","value":1.3},
-						{"state":"Wisconsin","value":0.99992319, "crossed": true},
-						{"state":"Wyoming","value":0.58640553}
+			{"state":"Alabama","value":0.16490015, "crossed": true, "color": "#000"},
+			{"state":"Alaska","value":1.27506968, "crossed": true},
+			{"state":"Arizona","value":1.3},
+			{"state":"Arkansas","value":1.3},
+			{"state":"California","value":1.3},
+			{"state":"Colorado","value":1.3},
+			{"state":"Connecticut","value":2.0},
+			{"state":"Delaware","value":1.3},
+			{"state":"District of Columbia","value":2},
+			{"state":"Florida","value":0.34861751, "crossed": true},
+			{"state":"Georgia","value":0.38855606, "crossed": true},
+			{"state":"Hawaii","value":1.3},
+			{"state":"Idaho","value":0.27427035, "crossed": true},
+			{"state":"Illinois","value":1.3},
+			{"state":"Indiana","value":0.2404761, "crossed": true},
+			{"state":"Iowa","value":1.3},
+			{"state":"Kansas","value":0.37995391, "crossed": true},
+			{"state":"Kentucky","value":1.3},
+			{"state":"Louisiana","value":0.23986175, "crossed": true},
+			{"state":"Maine","value":1.0503072, "crossed": true},
+			{"state":"Maryland","value":1.3},
+			{"state":"Massachusetts","value":1.3},
+			{"state":"Michigan","value":1.3},
+			{"state":"Minnesota","value":2.0},
+			{"state":"Mississippi","value":0.29024577, "crossed": true},
+			{"state":"Missouri","value":0.23863287, "crossed": true},
+			{"state":"Montana","value":0.51758832, "crossed": true},
+			{"state":"Nebraska","value":0.55384024, "crossed": true},
+			{"state":"Nevada","value":1.3},
+			{"state":"New Hampshire","value":0.7498463, "crossed": true},
+			{"state":"New Jersey","value":1.3},
+			{"state":"New Mexico","value":1.3},
+			{"state":"New York","value":1.3},
+			{"state":"North Carolina","value":0.45368663, "crossed": true},
+			{"state":"North Dakota","value":1.3},
+			{"state":"Ohio","value":1.3},
+			{"state":"Oklahoma","value":0.48010752, "crossed": true},
+			{"state":"Oregon","value":1.3},
+			{"state":"Pennsylvania","value":0.37995391, "crossed": true},
+			{"state":"Rhode Island","value":1.3},
+			{"state":"South Carolina","value":0.66996927, "crossed": true},
+			{"state":"South Dakota","value":0.53909370, "crossed": true},
+			{"state":"Tennessee","value":1.10990783, "crossed": true},
+			{"state":"Texas","value":0.19132104, "crossed": true},
+			{"state":"Utah","value":0.46658986},
+			{"state":"Vermont","value":1.3},
+			{"state":"Virginia","value":0.51820276, "crossed": true},
+			{"state":"Washington","value":1.3},
+			{"state":"West Virginia","value":1.3},
+			{"state":"Wisconsin","value":0.99992319, "crossed": true},
+			{"state":"Wyoming","value":0.58640553}
           ],
           observer: '_inputChanged'
         },
@@ -252,7 +252,7 @@
 		    
 			  	var self = this;
 			  	  
-          self.dims = {width: 300, height: 400}; //self.setupDimensions(self);
+          self.dims = {width: 300, height: 200}; //self.setupDimensions(self);
 
 			  	self.formats = {
                 	percent: d3.format('%')
@@ -412,9 +412,14 @@
 				// spare 0.1 of with on each side for min/max values
 				var colorScaleWidth = self.dims.width * 0.7;
 
-			    // colors in legendScale
-			    d3.select(self.$.legendScale).selectAll('span').data(range).enter().append('span')
+			    // colors in legendscale
+			    var legendSpan = Polymer.dom(self.$.legendscale).node;
+			    console.log(legendSpan);
+			    d3.select(legendSpan).selectAll('span').data(range).enter().append('span')
+			    	.attr('class', 'legend-item')
 			    	.style('width', colorScaleWidth/7+'px')
+			    	.style('height', '1em')
+			    	.style('display', 'inline-block')
 			    	.style('background-color', function(d) { return d;});
 
 			    
