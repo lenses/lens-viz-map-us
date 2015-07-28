@@ -17,6 +17,14 @@
       	pointer-events:none;
       }
 
+      path.state {
+      	stroke-width: 1px;
+      }
+
+      path.active {
+      	stroke: '#888';
+      }
+
       #state {
       	position: absolute;
       	transition: opacity 0.7s;
@@ -245,15 +253,16 @@
 
 		        	}.bind(this));
 		        }
-		        console.log(this.input);
 
 	        },
 	        
 			init: function() {
 		    
 			  	var self = this;
+
+			  	self.animateOnInit = true;
 			  	  
-          		self.dims = self.getComputedSize();//{width: 300, height: 200}; //self.setupDimensions(self);
+          		self.dims = self.getComputedSize(); //{width: 300, height: 200}; //self.setupDimensions(self);
 
 			  	self.formats = {
                 	percent: d3.format('%')
@@ -285,76 +294,28 @@
 	                .attr('class','states_map');
 	            
 
-	            d3.json(self.resolveUrl(self.dataUrls.us), function(error, us) {
-	                self._processData(error,us);
+	            d3.json(self.resolveUrl(self.dataUrls.us), function(error, usMapData) {
+	                
+	                self._drawMap(usMapData, self._processData.bind(self));
 	            
 	            });    
 
 		  	},
 
-		  	_processData: function(err, us) {
-		  		this.us = us;
+		  	_processData: function(callback) {
 
 		  		//this._render( this.animateOnInit ? this.animte : null);
 
-		  		if(this.animateOnInit) {
-		  			this._render(this.animate);
-		  		}
-		  		else {
-		  			this._render();
-		  		}
-
-		  	},
-
-		  	_render: function(callback) {
-            	var self = this;
-
-            	if(!self.us) {
-            		return;
-            	}
-
-                var scale = 0.05,
-		        	centers = self.centers,
-                	states = topojson.feature(self.us, self.us.objects.states);
-
-
-            	self.states = null;
-
-                self.states = self.map.selectAll('path.state')
-                    .data(states.features);
-
-                  self.states.enter().append('path');
-
-
-                  self.states.attr('class', function(d) { 
-                    	var classes = 'state map-border '+d.properties.name.toLowerCase().replace(/\s/g, '-');
-                        return classes;
-                    })
-                    .attr('d', self.path)
-                    .on("click", function(d) { return self._clicked(d,self); })
-                    .attr("centroid", function(d) {
-                      var centroid = self.path.centroid(d);
-                      centers[d.properties.name.toLowerCase().replace(/\s/g, '-')]= centroid;
-                    })
-                    //.attr("color", function(d) { return d.color;})
-                    .attr('fill', '#FFF')
-                    .attr("state", function(d) { 
-                    	//TODO: doesn;t do anything! cleanup?
-
-                    	var stateName = d.state || d.label; // accept d.label for consistancy with other charts
-                    	// if(stateName.length==2) {
-                    	// 	stateName = codeToStateName(sateName);
-                    	// }
-
-                    	return stateName;
-                    });
-
+		  		var self = this,
+		  			markScale = 0.05;
 
 
                 var marks = self.input ? self.input.filter(function(d) {
 
                 		return d.crossed ? d : null;
                 }) : [];
+
+
 
 
                 self.marks = self.map.selectAll('.mark').data(marks).enter().append('g')
@@ -367,7 +328,7 @@
 	            .attr('transform', function(d, i) {
 	                var name = d.state.toLowerCase().replace(/[\s\t]+/g,"-");
 	                //TODO change to a more elegant formatting....
-	            	return 'translate ('+parseInt(centers[name][0]-7)+','+parseInt(centers[name][1]-7)+') scale('+scale+','+scale+')';
+	            	return 'translate ('+parseInt(self.centers[name][0]-7)+','+parseInt(self.centers[name][1]-7)+') scale('+markScale+','+markScale+')';
 	            })
 	            .attr('width', 12)
 	            .attr('height', 12);
@@ -436,9 +397,12 @@
 			    if(!self.initialized) {
 
 				    self.initialized = true;
-		            self.fire('th-ready', {msg: 'element ready', element: this});
+		            self.fire('lens-ready', {msg: 'element ready', element: this});
 
-		            self.animate();
+		            if(self.animateOnInit) 
+		            {
+		            	self.animate();
+		            }
 
 
 		        }
@@ -449,11 +413,52 @@
 		        }
 
 
+		  	},
+
+
+		  	_drawMap: function(usMapData, callback) {
+            	var self = this;
+
+            	if(!usMapData) {
+            		return;
+            	}
+
+		        var centers = self.centers,
+                	states = topojson.feature(usMapData, usMapData.objects.states);
+
+
+            	self.states = null;
+
+                self.states = self.map.selectAll('path.state')
+                    .data(states.features);
+
+                 self.states.enter().append('path');
+
+
+              	self.states.attr('class', function(d) { 
+                	var classes = 'state map-border '+d.properties.name.toLowerCase().replace(/\s/g, '-');
+                    return classes;
+                })
+                .attr('d', self.path)
+                .on("click", function(d) { return self._clicked(d,self); })
+                .attr("centroid", function(d) {
+                  var centroid = self.path.centroid(d);
+                  centers[d.properties.name.toLowerCase().replace(/\s/g, '-')]= centroid;
+                })
+                .attr('stroke', '#CCC')
+                .attr('fill', '#FFF'); //TODO: replace with theme background color
+                   
+                 if(callback) {
+                 	callback();
+                 }
+
                     
              }, 
              reset : function() {
              	var self = this;
              	self.marks.style('opacity', 0);
+
+             	self.states.style('fill', '#FFF');
 
              },
              
@@ -512,7 +517,7 @@
 				  self.map.transition()
 				      .duration(750)
 				      .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
-				      .style("stroke-width", 1.5 / k + "px");
+				     // .style("stroke-width", 1.5 / k + "px");
              },
              animate : function() {
 
