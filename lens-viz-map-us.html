@@ -388,7 +388,6 @@
 
 			    // colors in legendscale
 			    var legendSpan = Polymer.dom(self.$.legendscale).node;
-			    console.log(legendSpan);
 			    d3.select(legendSpan).selectAll('span').data(range).enter().append('span')
 			    	.attr('class', 'legend-item')
 			    	.style('width', colorScaleWidth/7+'px')
@@ -627,7 +626,7 @@
 				  }
 				}
 		   },
-
+       //TODO: always 400x300 not working
 		   //TODO: to be moved to mixin file.
 		   getComputedSize: function() {
 		   	  var dimNames = ['width', 'height'],
@@ -638,7 +637,6 @@
 		   	  	var dimName = dimNames[index];
 		   	  	var dim = this[offsetNames[dimName]];
 		   	  	if(dim<=0) {
-		   	  		console.log(this.style);
 		   	  		dim = this.style[dimName];
 		   	  	}
 	            if(/.*\%/.test(dim)){
@@ -650,7 +648,6 @@
 	            dims[dimName] = dim || (dimName==='width' ? 400 : 300);
 
 		   	  }
-		   	  console.log('dims', dims);
 		   	  return dims;
 
 
