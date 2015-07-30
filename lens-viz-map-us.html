@@ -220,19 +220,34 @@
 	                  },self.animateAfter);
 	                }
 	            }
-
+/*
 	            this.stateAccessor = function(d) {
 	            	return d.state
 	            };
 	            this.dataAccessor = function(d) {
 	            	return d.value;
 	            };
-	            this.markAccessor = function(d) {
+
+              this.markAccessor = function(d) {
 	            	return d.marked;
 	            };
+*/
+	             this.$.data_selector.addEventListener('lens-selection-changed', function(e) {
+                 var selection = e.detail;
+                 if(selection.length==2 && selection[0] && selection[1]) {
 
-	             this.$.data_selector.addEventListener('th-data-selection-changed', function() {
-		        	if(this.labelValueSelection.length==2) {
+                   this.stateAccessor = function(d) {
+                      return d[selection[0]];
+                   }
+
+                    
+                   this.dataAccessor = function(d) {
+                      return d[selection[1][0]];
+                    }
+
+                  this._processData();
+
+                 /*  
 		        		var firstValue = this.input[0][this.labelValueSelection[1][0]];
 
 		        		this.valueFormat = this.$.data_utility.extractNumberFormat(firstValue);
@@ -243,7 +258,9 @@
 			        		}
 
 			        	}.bind(this));
-			        }
+              }
+              */
+              }
 		        }.bind(this));
 
 	        },
@@ -322,7 +339,7 @@
 		  			markScale = 0.05;
 
 
-                var marks = self.input ? self.input.filter(function(d) {
+                var marks = self.input && self.markAccessor ? self.input.filter(function(d) {
 
                 		return self.markAccessor(d) ? d : null;
                 }) : [];
