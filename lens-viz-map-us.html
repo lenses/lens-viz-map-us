@@ -358,9 +358,11 @@
                 }) : [];
 
 
+                var marksData = self.map.selectAll('.mark').data(marks);
 
+                marksData.exit().remove();
 
-                self.marks = self.map.selectAll('.mark').data(marks).enter().append('g')
+                self.marks = marksData.enter().append('g')
 	            .attr('class', function(d) {
 	            	// /[\s\t]+/g is there for cases where there is more than one white space or a tab in the state name (that actually happened)
 	                var name = d.state.toLowerCase().replace(/[\s\t]+/g,"-");
