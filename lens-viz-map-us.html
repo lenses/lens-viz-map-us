@@ -212,6 +212,12 @@
 	        ready: function() {
 	            this.init();
 
+              this.$.data_selector.selectionSettings =  [
+                {name: 'state', type: 'any', multi: false},
+                {name: 'value', type: 'numerical', multi: false, excludeUsed: true},
+                {name: 'mark', type: 'any', multi: false, excludeUsed: true}
+              ];
+
 	            if(this.animateAfter>0) {
 	                if(this.animateAfter>0) {
 	                  var self = this;
@@ -242,10 +248,14 @@
 
                     
                    this.dataAccessor = function(d) {
-                      return d[selection[1][0]];
-                    }
+                      return d[selection[1]];
+                   }
 
-                  this._processData();
+                   this.markAccessor = function(d) {
+                      return d[selection[2]];
+                  }
+                    
+                    this._processData();
 
                  /*  
 		        		var firstValue = this.input[0][this.labelValueSelection[1][0]];
@@ -338,6 +348,9 @@
 		  		var self = this,
 		  			markScale = 0.05;
 
+          if(!self.dataAccessor || !self.stateAccessor) {
+            return;
+          }
 
                 var marks = self.input && self.markAccessor ? self.input.filter(function(d) {
 
